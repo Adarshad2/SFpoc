@@ -1,0 +1,5 @@
+email,name,password
+novak@example.com,Novak Djokovic,$2b$12$aAl3252xoaOW6MzoA7JrC..h0eJsZSVsyhIX0G1pLgRqZBzPCgQmO
+alice@example.com,Alice Smith,$2b$12$6KW6FVx9JWnsoqWq2.uzHe230E2JC83Z/z5ZNMezsgWbqtWCgTyEa
+bob@example.com,Bob Johnson,$2b$12$jGXM0wI/otzHZiZhoAa.UuEBJufsVl.prDx3OXOJ.F2ic/NUqQmSG
+carol@example.com,Carol Lee,$2b$12$fWwlwAN8nunLvH4RydS0L.twPMEhD6O4Xv7RBPBo3ZroCnC7Chgj.

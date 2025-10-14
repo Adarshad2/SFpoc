@@ -1,0 +1,9 @@
+product_id,name,category,price,description,stock,image
+P001,Wireless Headphones,Electronics,299.99,Premium noise-cancelling headphones with 30-hour battery life,25,headphones.jpg
+P002,Smartphone X1,Electronics,899.99,Latest model with 5G and AI camera,15,smartphone.jpg
+P003,Cotton T-Shirt,Clothes,29.99,Comfortable 100% cotton casual t-shirt,50,tshirt.jpg
+P004,Smart Watch Pro,Electronics,399.99,Fitness tracking smartwatch with heart rate monitor,20,watch.jpg
+P005,Denim Jeans,Clothes,79.99,Classic fit denim jeans - multiple sizes available,30,jeans.jpg
+P006,4K Television,Electronics,1199.99,55-inch Ultra HD 4K TV,8,tv.jpg
+P007,Double-door Refrigerator,Electronics,699.99,Energy-efficient large fridge,5,fridge.jpg
+P008,Mirrorless Camera,Electronics,2499.99,High-end mirrorless camera for pros,4,camera.jpg
