@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Shopee App Wrapper</title>
+  <style>
+    html,body{height:100%;margin:0;}
+    /* full page iframe for streamlit */
+    #app-frame{width:100%;height:100vh;border:none;display:block;}
+
+    /* Chat overlay (hidden by default) */
+    .floating-chat {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 2147483647;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      user-select:none;
+    }
+
+    .chat-btn {
+      background: #EE4D2D;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      font-size: 26px;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(238,77,45,0.35);
+    }
+
+    .chat-box {
+      display: none;
+      width: 360px;
+      height: 480px;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+      overflow: hidden;
+      background: #fff;
+      margin-bottom: 12px;
+      flex-direction: column;
+    }
+
+    .chat-box.show { display: flex; }
+
+    .chat-header {
+      background: linear-gradient(135deg,#EE4D2D,#ff6b45);
+      color: white;
+      padding: 10px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+    }
+
+    .chat-body {
+      padding: 12px;
+      background:#f5f5f5;
+      flex:1;
+      overflow:auto;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+
+    .chat-footer {
+      padding: 10px;
+      display:flex;
+      gap:8px;
+      align-items:center;
+      background:#fff;
+    }
+
+    .chat-input {
+      flex:1;
+      padding:8px 12px;
+      border-radius: 20px;
+      border:1px solid #ddd;
+    }
+
+    .msg-user {
+      align-self:flex-end;
+      background:#EE4D2D;
+      color:white;
+      padding:8px 12px;
+      border-radius:16px;
+      max-width:80%;
+      word-wrap:break-word;
+    }
+
+    .msg-bot {
+      align-self:flex-start;
+      background:#ffffff;
+      border:1px solid #eee;
+      padding:8px 12px;
+      border-radius:16px;
+      max-width:80%;
+      word-wrap:break-word;
+    }
+
+    /* hidden by default, shown when signaled */
+    #chat-wrapper { display: none; align-items:flex-end; flex-direction:column; }
+    #chat-wrapper.visible { display:flex; }
+  </style>
+</head>
+<body>
+  <!-- Streamlit app inside iframe -->
+  <iframe id="app-frame" src="http://localhost:8501"></iframe>
+
+  <!-- Chat overlay -->
+  <div id="chat-wrapper" class="">
+    <div class="chat-box" id="chatBox" role="dialog" aria-hidden="true">
+      <div class="chat-header">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span>🤖</span><strong id="chatTitle">Shopee Assistant</strong>
+        </div>
+        <button id="closeChatBtn" title="Close" style="background:transparent;border:none;color:white;font-size:18px;cursor:pointer;">✕</button>
+      </div>
+      <div class="chat-body" id="chatBody">
+        <div class="msg-bot" id="greeting">👋 Hi there! How can I help you today?</div>
+      </div>
+      <div class="chat-footer">
+        <input id="chatInput" class="chat-input" placeholder="Type your message..." />
+        <button id="sendBtn" title="Send" style="background:#EE4D2D;border:none;border-radius:8px;color:#fff;padding:8px 10px;cursor:pointer;">📤</button>
+      </div>
+    </div>
+
+    <button class="chat-btn" id="chatToggleBtn" title="Open chat">💬</button>
+  </div>
+
+  <script>
+    // Chat DOM refs
+    const chatWrapper = document.getElementById('chat-wrapper');
+    const chatBox = document.getElementById('chatBox');
+    const chatBody = document.getElementById('chatBody');
+    const chatInput = document.getElementById('chatInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const toggleBtn = document.getElementById('chatToggleBtn');
+    const closeBtn = document.getElementById('closeChatBtn');
+    const greeting = document.getElementById('greeting');
+
+    // Show/hide chat wrapper (visible when logged in)
+    function showChatWrapper(show) {
+      if (show) {
+        chatWrapper.classList.add('visible');
+      } else {
+        chatWrapper.classList.remove('visible');
+        chatBox.classList.remove('show');
+      }
+    }
+
+    // Toggle chat open/close
+    function toggleChat() {
+      chatBox.classList.toggle('show');
+      if (chatBox.classList.contains('show')) {
+        chatBox.setAttribute('aria-hidden', 'false');
+      } else {
+        chatBox.setAttribute('aria-hidden', 'true');
+      }
+    }
+
+    // Append messages
+    function appendUserMsg(text) {
+      const d = document.createElement('div');
+      d.className = 'msg-user';
+      d.textContent = text;
+      chatBody.appendChild(d);
+      chatBody.scrollTop = chatBody.scrollHeight;
+    }
+    function appendBotMsg(text) {
+      const d = document.createElement('div');
+      d.className = 'msg-bot';
+      d.textContent = text;
+      chatBody.appendChild(d);
+      chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    // Handle send
+    function sendMessage() {
+      const text = chatInput.value.trim();
+      if (!text) return;
+      appendUserMsg(text);
+      chatInput.value = '';
+      // Very simple bot response (placeholder)
+      setTimeout(()=> appendBotMsg('🤖 Got it!'), 350);
+    }
+
+    sendBtn.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+    toggleBtn.addEventListener('click', toggleChat);
+    closeBtn.addEventListener('click', toggleChat);
+
+    // Listen for messages from the Streamlit iframe.
+    // Expected message shapes:
+    // { type: 'SHOW_CHAT', name: 'Alice' } -> show chat overlay and set greeting
+    // { type: 'HIDE_CHAT' } -> hide chat overlay
+    window.addEventListener('message', (ev) => {
+      // Optionally check origin: ev.origin
+      const data = ev.data || {};
+      if (data && data.type === 'SHOW_CHAT') {
+        const who = data.name || 'there';
+        greeting.textContent = `👋 Hi ${who}! How can I help you today?`;
+        showChatWrapper(true);
+      } else if (data && data.type === 'HIDE_CHAT') {
+        showChatWrapper(false);
+      }
+    }, false);
+
+    // Optional: ping the iframe to ask if user logged in (if you want)
+    // document.getElementById('app-frame').contentWindow.postMessage({type:'PING'}, '*');
+  </script>
+</body>
+</html>
