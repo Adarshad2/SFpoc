@@ -1,14 +1,14 @@
 
-# Shopee-like Streamlit App (Windows Bundle)
+# Shopee-like Streamlit App V3 (Windows)
 
 ## Quick start (Windows)
 
 1. Extract the ZIP into a folder, e.g.:
-   `C:\Users\Dell\Downloads\shopee_streamlit_app_final2`
+   `C:\Users\Dell\Downloads\shopee_streamlit_app_v3`
 
 2. Open PowerShell in that folder.
 
-3. Create virtual env (optional but recommended):
+3. (Optional) Create virtual env (recommended):
    `python -m venv .venv`
    `.\.venv\Scripts\activate`
 
@@ -21,4 +21,6 @@
 6. Run the app:
    `python -m streamlit run app.py`
 
-Default login: novak@example.com / novakpass
+Default logins:
+- novak@example.com / novakpass
+- alice@example.com / alicepass
